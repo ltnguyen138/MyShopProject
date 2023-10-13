@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments::page_head('Quản lý đơn hàng - MyShop Admin','none')">
+
+</head>
+<body>
+	<div class="container-fluid ">
+		<div th:replace="navigation::menu"></div>
+				
+		<div>
+			<h2>Quản lý đơn hàng</h2>
+		</div >
+		<div class="mt-3">
+			
+			<a th:href="@{/users/export/csv}">Xuất file CSV</a>
+			&nbsp;|&nbsp;
+			
+		</div>
+		<div th:if="${message !=null}" class="alert alert-success text-center">
+			[[${message}]]
+		</div>
+		<div th:if="${errorMessage !=null}" class="alert alert-danger text-center">
+			[[${errorMessage}]]
+		</div>
+		<div>
+			<form th:action="@{/orders/page/1}" class="form-inline m-3">
+				<input type="hidden"  name="sortField" th:value="${sortField}"/>
+				<input type="hidden"  name="sortDir" th:value="${sortDir}"/>
+				Tìm kiếm:&nbsp;
+				<input type="search" name="keyword" class="form-control" required th:value="${keyword}" />
+				&nbsp;&nbsp;
+				<input type="submit" value="Tìm kiếm" class="btn btn-primary" />
+				&nbsp;&nbsp;
+				<a  class="btn btn-secondary" 
+				th:href="@{'/orders/page/'+${pageNum}+'?sortField='+${sortField}+'&sortDir='+${sortDir}+'&keyword='}" >
+				 Hủy</a>
+			</form>
+		</div>
+		
+		<div class="mt-2">
+			<table class="table table-bordered table-striped table-hover  table-responsive-xL">
+				<thead class="thead-dark" >
+				
+					<tr >
+					
+						<th th:replace="fragments::column_link('orders','id','Mã ')" ></th>
+						
+						<th th:replace="fragments::column_link('orders','orderTime','Ngày tạo')" ></th>
+						
+						<th th:replace="fragments::column_link('orders','fullName','Tên khách hàng')" ></th>
+
+						<th th:replace="fragments::column_link('orders','destination','Địa chỉ')" ></th>
+
+						<th th:replace="fragments::column_link('orders','total','Tổng số tiền')" ></th>	
+						
+						<th th:replace="fragments::column_link('orders','paymentMethod','Thanh toán')" ></th>
+											
+						<th th:replace="fragments::column_link('orders','orderStatus','Trạng Thái')" ></th>
+						
+						
+				
+						<th></th>
+						
+					</tr>
+										
+				</thead>	
+				<tbody>
+					<tr th:each="order : ${listAllOrders}" >
+						<td th:text="${order.id}"></td>
+						<td ><div th:replace="fragments::format_time(${order.orderTime})"></div></td>
+						<td th:text="${order.getFullName}"></td>
+						<td th:text="${order.getDestination}"></td>
+						<td ><div th:replace="fragments::currency_fragment(${order.total})"></div></td>
+						<td th:text="${order.paymentMethod}"></td>
+					
+						<td th:text="${order.orderStatus}"></td>
+					
+						
+						<td class="text-center">
+						<a class="fas fa-file-alt fa-2xl icon-green link-detail"
+							th:href="@{'/orders/detail/'+${order.id}}"
+							title="Xem chi tiết đơn hàng này" ></a>
+							&nbsp; &nbsp;
+						<a class="fa-solid fa-pen-to-square fa-2xl icon-bluedark " th:href="@{'/orders/edit/'+${order.id}}"
+						title="Chỉnh sửa  đơn hàng này"></a>
+						 &nbsp; &nbsp;
+						<a  class="fa-solid fa-trash fa-2xl link-delete" style="color: #db2d1a;" th:href="@{'/orders/delete/'+${order.id}}"
+						title="Xóa đơn hàng này" th:orderid="${order.id}" ></a></td>
+						
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="modal fade text-center" id="confirmModal">
+			<div class="modal-dialog">
+				<div class=modal-content>
+					<div class="modal-header">
+						<h4 class="modal-title" id="confirmTitle">Xác nhận xóa</h4>
+						<button type="button" class="close" data-dismiss="modal">&times; </button>
+					</div>
+					<div class="modal-body">
+						<span id="confirmBody"></span>
+					</div>
+					<div class="modal-footer">
+						<a class="btn btn-success mx-3  " href="" id="yesButton">Xác nhận</a>
+						<button type="button" class="btn px-4 btn-danger " data-dismiss="modal">Không </button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="text-center m-1" th:if="${totalItems>0}">
+			<span>Từ đơn hàng thứ [[${startCount}]] đến thứ [[${endCount}]] trong số [[${totalItems}]] đơn hàng</span>
+		</div>
+		<div class="text-center m-1" th:unless="${totalItems>0}">
+			<span>Không tìm thấy đơn hàng</span>
+		</div>
+		<div th:if="${totalPages>0}">
+			<nav >
+			  <ul class="pagination justify-content-center">
+			  
+			    <li class="page-item">
+			      <a th:replace="fragments::page_link('orders','1','&laquo;')"></a>
+			    </li>
+			    
+			    <li class="page-item" th:unless="${pageNum==1}">
+			      <a th:replace="fragments::page_link('orders',${pageNum-1},'&lt;')"></a>
+			    </li>
+			    
+			    <li th:class="${pageNum!=i? 'page-item' : 'page-item active' }" th:each="i:${#numbers.sequence(1,totalPages)}">
+			    <a th:replace="fragments::page_link('orders',${i},${i})"></a>
+			    </li>
+			   
+			    <li class="page-item" th:unless="${pageNum==totalPages}">
+			      <a th:replace="fragments::page_link('orders',${pageNum+1},'&gt;')"></a>
+			    </li>
+			    <li class="page-item" >
+			      <a th:replace="fragments::page_link('orders',${totalPages},'&raquo')"></a>
+			    </li>
+			  </ul>
+			</nav>
+		</div>
+		<div class="modal fade " id="detailModal" >
+			<div class="modal-dialog modal-xl" >
+				<div class=modal-content>
+					
+				</div>
+			</div>
+		</div> 
+		<div th:replace="fragments::footer"></div>
+		
+		<script type="text/javascript">
+	moudleUrl="[[@{/orders}]]"
+	var csrfHeaderName = "[[${_csrf.headerName}]]";
+	var csrfValue = "[[${_csrf.token}]]";
+	$(document).ready(function(){
+		$(".link-delete").on("click",function(e){
+			e.preventDefault();
+			link=$(this);
+			orderid=link.attr("orderid");
+			$("#confirmBody").text("Xác nhận xóa đơn hàng: "+orderid);
+			$("#confirmModal").modal();
+			$("#yesButton").attr("href",link.attr("href"));
+		});
+		$(".link-detail").on("click",function(e){
+			e.preventDefault();
+			linkDetailUrl=$(this).attr("href");
+			
+			
+			$("#detailModal").modal("show").find(".modal-content").load(linkDetailUrl);
+			
+		});
+		
+	});
+	
+
+	
+	</script>
+	</div>
+	
+</body>
+</html>

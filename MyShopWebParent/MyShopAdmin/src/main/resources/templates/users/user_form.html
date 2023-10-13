@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments::page_head('Quản lý người dùng - MyShop Admin','none')">
+
+</head>
+<body>
+	<div class="container-fluid ">
+		<div th:replace="navigation::menu"></div>
+				
+		<div class="my-3 text-center">
+			<h2>[[${pageTitle}]]</h2>
+		</div >
+
+		<div class="mt-4">
+			<form th:action="@{/users/save}" method="post" style="max-width: 1000px; margin: 0 auto" th:object="${user}" onsubmit="return checkEmailUnique(this);" id="formu"
+			enctype="multipart/form-data">
+				<div class="border border-secondary rounded p-3">
+				<input type="hidden" th:field="*{id}"/>
+					<div class="form-group row">
+						<label class="col-sm-4 col-form-label">E-mail:</label>
+						<div class="col-sm-8">
+							<input type="email" class="form-control" th:field="*{email}" required minlength="8" maxlength="128"> 
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-4 col-form-label">Họ:</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control" th:field="*{lastName}" required minlength="1" maxlength="128"> 
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-4 col-form-label">Tên:</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control" th:field="*{firstName}" required minlength="1" maxlength="128"> 
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-4 col-form-label">Mật khẩu:</label>
+						<div class="col-sm-8">
+							<input th:if="${user.id==null}" type="password" class="form-control" th:field="*{password}" required minlength="8" maxlength="128"> 
+							<input th:if="${user.id!=null}" type="password" class="form-control" th:field="*{password}"  minlength="8" maxlength="128"> 
+							
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-4 col-form-label">Vai trò:</label>
+						<div class=" col-sm-8">
+							<th:block th:each="role:${listRoles}" class="form-check form-check-inline">
+								<input type="checkbox" th:field="*{roles}" th:text="${role.name}" th:value="${role.id}" class="m-2 " />
+								<span>- [[${role.description}]]</span>
+								<br/>
+							</th:block> 								
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-4 col-form-label">Kích hoạt:</label>
+						<div class=" col-sm-8">							
+							<input type="checkbox" th:field="*{enabled}" class="m-2 " />
+																					
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<label class="col-sm-4 col-form-label">Ảnh đại diện:</label>
+						<div class=" col-sm-8">							
+							<input type="file" name="image" id="fileImage" class="m-2  " accept="image/png, image/jpeg"/>
+							<img alt="anhdaidien" th:field="*{photos}" th:src="@{${user.getPhotosPath}}" class="img-fluid" id="thumbnail"
+							>																
+						</div>
+					</div>
+					
+					<div class="text-center">
+						<input type="submit" value="Lưu" class="btn btn-primary m-3 px-5"/>
+						<input type="button" value="Quay lại" class="btn btn-secondary m-3 px-4" id="buttonCancel"/>
+					</div>
+				</div>
+			</form>
+		</div>
+		
+		<div class="modal fade text-center" id="modalDialog">
+			<div class="modal-dialog">
+				<div class=modal-content>
+					<div class="modal-header">
+						<h4 class="modal-title" id="modalTitle">Lỗi</h4>
+						<button type="button" class="close" data-dismiss="modal">&times; </button>
+					</div>
+					<div class="modal-body">
+						<span id="modalBody"></span>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div th:replace="fragments::footer"></div>
+		
+	</div>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$("#buttonCancel").on("click",function(){
+			window.location="[[@{/users}]]"
+		});
+		
+	})	;
+	
+	function checkEmailUnique(formm){
+		
+		url="[[@{/users/check_email}]]";
+		userEmail=$("#email").val();
+		userId=$("#id").val();
+		csrfValue=$("input[name='_csrf']").val();
+		params={id:userId, email: userEmail,_csrf: csrfValue};
+		$.post(url, params, function(response){
+			if(response=="OK"){
+				formm.submit();
+				
+			}else if (response=="Duplicate"){
+				showModalDialog("Lỗi","Email "+userEmail+" đã được sử dụng");
+			}
+			
+		});
+		return false;
+	}
+	function showModalDialog(title,message){
+		$("#modalTitle").text(title);
+		$("#modalBody").text(message);
+		$("#modalDialog").modal();
+	}
+	</script>
+	<script th:src="@{/js/common_form.js}"></script>
+</body>	
+</html>

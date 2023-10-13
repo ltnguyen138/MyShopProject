@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="fragments::page_head('Đặt hàng - MyShop ','none')">
+<body>
+	<div class="container-fluid ">
+		<div th:replace="navigation::header_menu"></div>
+		<div th:replace="fragments::form_search_nav"></div>
+		
+		<div class="text-center border border-secondary rounded m-3 p-3">
+			<h2>Bạn đã đặt hàng thành công</h2>
+			<h5>Email xác nhận đơn hàng đã gửi đến email của bạn, vui lòng kiểm xác và xác nhận email để chúng tôi gửi hàng đến bận sớm nhất.</h5>
+		</div>
+		
+		<div th:replace="navigation::footer_menu"></div>
+		<div th:replace="fragments::footer"></div>
+		
+		
+		<script type="text/javascript">
+			moduleURL="[[@{/}]]";
+			contextPath = "[[@{/}]]";
+			var csrfHeaderName = "[[${_csrf.headerName}]]";
+			var csrfValue = "[[${_csrf.token}]]";
+			
+			$(document).ready(function(){
+				
+			});
+		</script>
+	</div>
+</body>
+</html>

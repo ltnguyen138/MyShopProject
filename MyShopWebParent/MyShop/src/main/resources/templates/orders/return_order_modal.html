@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head >
+	<meta charset="UTF-8">
+</head>
+
+<body>
+	<div th:fragment="content" class="modal fade" id="returnOrderModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="returnOrderModalTitle">Yêu câu trả hàng</h4>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+
+				<form onsubmit="return submitReturnOrderForm(this);">
+					<div class="modal-body">
+						<div id="divReason">
+							<div>Lý do:</div>
+							<div>
+								<input type="radio" name="returnReason"
+									value="Hàng không đúng như đã đặt" required /> Hàng không đúng như đã đặt
+							</div>
+							<div>
+								<input type="radio" name="returnReason"
+									value="Hàng bị hư hỏng do vận chuyển" /> Hàng bị hư hỏng do vận chuyển
+							</div>
+							
+							<div class="m-1">
+								<textarea class="form-control" id="returnNote" rows="3"
+									maxlength="120" placeholder="Lý do khác"></textarea>
+							</div>
+						</div>
+						<div id="divMessage" class="text-center"></div>
+					</div>
+
+
+					<div class="modal-footer">
+						<button type="submit"  class="btn btn-success" id="firstButton">Gửi yêu cầu</button>
+						<button type="button" class="btn btn-danger" id="secondButton"
+							data-dismiss="modal">Quay lại</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments::page_head('Quản lý thông tin khách hàng - MyShop Admin','none')">
+
+</head>
+<body>
+	<div class="container-fluid ">
+		<div th:replace="navigation::menu"></div>
+				
+		<div>
+			<h2>Quản lý thông tin khách hàng</h2>
+		</div >
+		<div class="mt-3">
+			
+			<a th:href="@{/users/export/csv}">Xuất file CSV</a>
+			&nbsp;|&nbsp;
+			
+		</div>
+		<div th:if="${message !=null}" class="alert alert-success text-center">
+			[[${message}]]
+		</div>
+		<div th:if="${errorMessage !=null}" class="alert alert-danger text-center">
+			[[${errorMessage}]]
+		</div>
+		<div>
+			<form th:action="@{/customers/page/1}" class="form-inline m-3">
+				<input type="hidden"  name="sortField" th:value="${sortField}"/>
+				<input type="hidden"  name="sortDir" th:value="${sortDir}"/>
+				Tìm kiếm:&nbsp;
+				<input type="search" name="keyword" class="form-control" required th:value="${keyword}" />
+				&nbsp;&nbsp;
+				<input type="submit" value="Tìm kiếm" class="btn btn-primary" />
+				&nbsp;&nbsp;
+				<a  class="btn btn-secondary" 
+				th:href="@{'/customers/page/'+${pageNum}+'?sortField='+${sortField}+'&sortDir='+${sortDir}+'&keyword='}" >
+				 Hủy</a>
+			</form>
+		</div>
+		
+		<div class="mt-2">
+			<table class="table table-bordered table-striped table-hover  table-responsive-xL">
+				<thead class="thead-dark" >
+				
+					<tr >
+					
+						<th th:replace="fragments::column_link('customers','id','Mã khách hàng')" ></th>
+						
+					
+						
+						<th th:replace="fragments::column_link('customers','email','Email')" ></th>
+
+						<th th:replace="fragments::column_link('customers','lastName','Họ')" ></th>
+
+						<th th:replace="fragments::column_link('customers','firstName','Tên')" ></th>	
+											
+						<th th:replace="fragments::column_link('customers','province','Tỉnh/thành phố')" ></th>
+						
+						<th th:replace="fragments::column_link('customers','district','Quận/huyện')" ></th>
+						
+						<th th:replace="fragments::column_link('customers','enabled','Trạng thái')" ></th>
+				
+						<th></th>
+						
+					</tr>
+										
+				</thead>	
+				<tbody>
+					<tr th:each="customer : ${listAllCustomers}" >
+						<td th:text="${customer.id}"></td>
+						
+						<td th:text="${customer.email}"></td>
+						<td th:text="${customer.lastName}"></td>
+						<td th:text="${customer.firstName}"></td>
+						<td th:if="${customer.province!=null}">[[${customer.province.name}]]</td>
+						<td th:if="${customer.province==null}"></td>
+						<td th:if="${customer.district!=null}">[[${customer.district}]]</td>
+						<td th:if="${customer.district==null}"></td>
+						<td> <div th:replace="fragments::enabled_status(${customer.enabled},'khách hàng',${customer.email},'/customers/'+${customer.id})"></div> </td>
+						
+						<td class="text-center">
+						<a class="fas fa-file-alt fa-2xl icon-green link-detail"
+							th:href="@{'/customers/detail/'+${customer.id}}"
+							title="Xem chi tiết khách hàng này" ></a>
+							&nbsp; &nbsp;
+						<a class="fa-solid fa-pen-to-square fa-2xl icon-bluedark " th:href="@{'/customers/edit/'+${customer.id}}"
+						title="Chỉnh sửa thông tin khách hàng này"></a>
+						 &nbsp; &nbsp;
+						<a  class="fa-solid fa-trash fa-2xl link-delete" style="color: #db2d1a;" th:href="@{'/customers/delete/'+${customer.id}}"
+						title="Xoa thông tin khách hàng này" th:customerEmail="${customer.email}" ></a></td>
+						
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="modal fade text-center" id="confirmModal">
+			<div class="modal-dialog">
+				<div class=modal-content>
+					<div class="modal-header">
+						<h4 class="modal-title" id="confirmTitle">Xác nhận xóa</h4>
+						<button type="button" class="close" data-dismiss="modal">&times; </button>
+					</div>
+					<div class="modal-body">
+						<span id="confirmBody"></span>
+					</div>
+					<div class="modal-footer">
+						<a class="btn btn-success mx-3  " href="" id="yesButton">Xác nhận</a>
+						<button type="button" class="btn px-4 btn-danger " data-dismiss="modal">Không </button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="text-center m-1" th:if="${totalItems>0}">
+			<span>Từ khách hàng thứ [[${startCount}]] đến thứ [[${endCount}]] trong số [[${totalItems}]] khách hàng</span>
+		</div>
+		<div class="text-center m-1" th:unless="${totalItems>0}">
+			<span>Không tìm thấy người dùng</span>
+		</div>
+		<div th:if="${totalPages>0}">
+			<nav >
+			  <ul class="pagination justify-content-center">
+			  
+			    <li class="page-item">
+			      <a th:replace="fragments::page_link('customers','1','&laquo;')"></a>
+			    </li>
+			    
+			    <li class="page-item" th:unless="${pageNum==1}">
+			      <a th:replace="fragments::page_link('customers',${pageNum-1},'&lt;')"></a>
+			    </li>
+			    
+			    <li th:class="${pageNum!=i? 'page-item' : 'page-item active' }" th:each="i:${#numbers.sequence(1,totalPages)}">
+			    <a th:replace="fragments::page_link('customers',${i},${i})"></a>
+			    </li>
+			   
+			    <li class="page-item" th:unless="${pageNum==totalPages}">
+			      <a th:replace="fragments::page_link('customers',${pageNum+1},'&gt;')"></a>
+			    </li>
+			    <li class="page-item" >
+			      <a th:replace="fragments::page_link('customers',${totalPages},'&raquo')"></a>
+			    </li>
+			  </ul>
+			</nav>
+		</div>
+		<div class="modal fade " id="detailModal" >
+			<div class="modal-dialog modal-xl" >
+				<div class=modal-content>
+					
+				</div>
+			</div>
+		</div> 
+		<div th:replace="fragments::footer"></div>
+		
+		<script type="text/javascript">
+	moudleUrl="[[@{/customers}]]"
+	
+	$(document).ready(function(){
+		$(".link-delete").on("click",function(e){
+			e.preventDefault();
+			link=$(this);
+			customerEmail=link.attr("customerEmail");
+			$("#confirmBody").text("Xác nhận khách hàng "+customerEmail);
+			$("#confirmModal").modal();
+			$("#yesButton").attr("href",link.attr("href"));
+		});
+		$(".link-detail").on("click",function(e){
+			e.preventDefault();
+			linkDetailUrl=$(this).attr("href");
+			
+			
+			$("#detailModal").modal("show").find(".modal-content").load(linkDetailUrl);
+			
+		});
+		
+	});
+	
+	$(document).ready(function(){
+		$(".link-updateEnabled").on("click",function(e){
+			e.preventDefault();
+			link=$(this);
+			userEmail=link.attr("mName");
+			$("#confirmTitle").text("Xác nhận");
+			$("#confirmBody").text("Xác nhận cập nhật trạng thái khách hàng: "+userEmail);
+			$("#confirmModal").modal();
+			$("#yesButton").attr("href",link.attr("href"));
+		})
+	});
+	
+	</script>
+	</div>
+	
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments::page_head(${pageTitle},'none')">
+</head>
+<body>
+	<div th:replace="navigation::header_menu"></div>
+	<div class="text-center my-3">
+		<h2>Bạn đã đăng kí tài khoản thành công.</h2>
+		<p>Vui lòng kiểm tra email của bạn để xác nhận tài khoản. </p>
+		<p><a th:href="@{/login}">Đăng nhập</a> <p>
+	</div>	
+	<div th:replace="navigation::footer_menu"></div>
+		<div th:replace="fragments::footer"></div>
+</body>
+</html>

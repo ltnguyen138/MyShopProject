@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="fragments::page_head('Đăng nhập My Shop','none')"></head>
+<body>
+	<div class="container-fluid ">
+		<div th:replace="navigation::header_menu"></div>	
+		
+		
+				
+			<div class="border border-secondary rounded p-3  ">
+				
+				
+				
+				<div th:if="${messageError !=null}" class="alert alert-danger text-center my-2">
+					[[${messageError}]]
+				</div>
+				<div th:if="${message !=null}" class="alert alert-success text-center my-2">
+					[[${message}]]
+				</div>
+				<div th:if="${message !=null}" class="text-center my-3">
+				<a th:href="@{/}" class="btn btn-primary ">Quay lại trang chủ</a>
+				&nbsp; 
+				<a th:href="@{/login}" class="btn btn-primary px-5">Đăng nhập</a>
+				</div>
+				
+				
+			</div>
+		
+	
+		<div th:replace="fragments::footer"></div>
+		
+	</div>
+	
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments::page_head('Quản lý người dùng - MyShop Admin','none')">
+
+</head>
+<body>
+	<div class="container-fluid ">
+		<div th:replace="navigation::menu"></div>
+				
+		<div>
+			<h2>Quản lý người dùng</h2>
+		</div >
+		<div class="mt-3">
+			<a th:href="@{/users/new}">Thêm mới</a>
+			&nbsp;|&nbsp;
+			<a th:href="@{/users/export/csv}">Xuất file CSV</a>
+			&nbsp;|&nbsp;
+			<a th:href="@{/users/export/excel}">Xuất file Excel</a>
+			&nbsp;|&nbsp;
+			<a th:href="@{/users/export/pdf}">Xuất file PDF</a>
+		</div>
+		<div th:if="${message !=null}" class="alert alert-success text-center">
+			[[${message}]]
+		</div>
+		
+		<div>
+			<form th:action="@{/users/page/1}" class="form-inline m-3">
+				<input type="hidden"  name="sortField" th:value="${sortField}"/>
+				<input type="hidden"  name="sortDir" th:value="${sortDir}"/>
+				Tìm kiếm:&nbsp;
+				<input type="search" name="keyword" class="form-control" required th:value="${keyword}" />
+				&nbsp;&nbsp;
+				<input type="submit" value="Tìm kiếm" class="btn btn-primary" />
+				&nbsp;&nbsp;
+				<a  class="btn btn-secondary" 
+				th:href="@{'/users/page/'+${pageNum}+'?sortField='+${sortField}+'&sortDir='+${sortDir}+'&keyword='}" >
+				 Hủy</a>
+			</form>
+		</div>
+		
+		<div class="mt-2">
+			<table class="table table-bordered table-striped table-hover  table-responsive-xL">
+				<thead class="thead-dark" >
+				
+					<tr >
+					
+						<th th:replace="fragments::column_link('users','id','Mã người dùng')" ></th>
+						
+						<th class="text-center">Ảnh đại diện</th>
+						
+						<th th:replace="fragments::column_link('users','email','Email')" ></th>
+
+						<th th:replace="fragments::column_link('users','lastName','Họ')" ></th>
+
+						<th th:replace="fragments::column_link('users','firstName','Tên')" ></th>
+						
+						<th th:replace="fragments::column_link('users','roles','Vai trò')" ></th>
+						
+						<th th:replace="fragments::column_link('users','enabled','Trạng thái')" ></th>
+				
+						<th></th>
+						
+					</tr>
+										
+				</thead>	
+				<tbody>
+					<tr th:each="user : ${listAllUsers}" >
+						<td th:text="${user.id}"></td>
+						<td class="text-center">
+						
+						<img th:src="@{${user.getPhotosPath}}" style="width: 50px"/>
+						</td>
+						<td th:text="${user.email}"></td>
+						<td th:text="${user.lastName}"></td>
+						<td th:text="${user.firstName}"></td>
+						<td> [[${user.roles}]]</td>
+						<td> <div th:replace="fragments::enabled_status(${user.enabled},'người dùng',${user.email},'/users/'+${user.id})"></div> </td>
+						
+						<td class="text-center"><a class="fa-solid fa-pen-to-square fa-2xl icon-bluedark " th:href="@{'/users/edit/'+${user.id}}"
+						title="Chỉnh sửa thông tin người dùng này"></a>
+						 &nbsp; &nbsp;
+						<a  class="fa-solid fa-trash fa-2xl link-delete" style="color: #db2d1a;" th:href="@{'/users/delete/'+${user.id}}"
+						title="Xoa thông tin người dùng này" th:userEmail="${user.email}" ></a></td>
+						
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="modal fade text-center" id="confirmModal">
+			<div class="modal-dialog">
+				<div class=modal-content>
+					<div class="modal-header">
+						<h4 class="modal-title" id="confirmTitle">Xác nhận xóa</h4>
+						<button type="button" class="close" data-dismiss="modal">&times; </button>
+					</div>
+					<div class="modal-body">
+						<span id="confirmBody"></span>
+					</div>
+					<div class="modal-footer">
+						<a class="btn btn-success mx-3  " href="" id="yesButton">Xác nhận</a>
+						<button type="button" class="btn px-4 btn-danger " data-dismiss="modal">Không </button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="text-center m-1" th:if="${totalItems>0}">
+			<span>Từ người dùng thứ [[${startCount}]] đến thứ [[${endCount}]] trong số [[${totalItems}]] người dùng</span>
+		</div>
+		<div class="text-center m-1" th:unless="${totalItems>0}">
+			<span>Không tìm thấy người dùng</span>
+		</div>
+		<div th:if="${totalPages>0}">
+			<nav >
+			  <ul class="pagination justify-content-center">
+			  
+			    <li class="page-item">
+			      <a th:replace="fragments::page_link('users','1','&laquo;')"></a>
+			    </li>
+			    
+			    <li class="page-item" th:unless="${pageNum==1}">
+			      <a th:replace="fragments::page_link('users',${pageNum-1},'&lt;')"></a>
+			    </li>
+			    
+			    <li th:class="${pageNum!=i? 'page-item' : 'page-item active' }" th:each="i:${#numbers.sequence(1,totalPages)}">
+			    <a th:replace="fragments::page_link('users',${i},${i})"></a>
+			    </li>
+			   
+			    <li class="page-item" th:unless="${pageNum==totalPages}">
+			      <a th:replace="fragments::page_link('users',${pageNum+1},'&gt;')"></a>
+			    </li>
+			    <li class="page-item" >
+			      <a th:replace="fragments::page_link('users',${totalPages},'&raquo')"></a>
+			    </li>
+			  </ul>
+			</nav>
+		</div>
+		
+		<div th:replace="fragments::footer"></div>
+	</div>
+	
+</body>
+</html>

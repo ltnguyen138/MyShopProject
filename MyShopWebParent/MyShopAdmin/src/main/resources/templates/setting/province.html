@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+
+	<div th:fragment="content" class="mt-4">
+		<p>Quản lý tỉnh/ thành phố trên web </p>
+		<div>
+			<input type="button" id="buttonLoadProvinces" value="Tải danh sách tỉnh/thành phố" class="btn btn-primary my-2">
+		</div>
+		<div>
+			<select class="form-control my-4" size="3" id="dropDownProvinces"></select>
+		</div>
+		<form id="formProvince">
+		<div class="form-group ">
+			<div class="row my-2">
+				<div class="col-2"></div>
+				<label class="col-form-label col-2">Tên tỉnh/thành phố:</label>
+				<div class="col-md-6">
+					<input type="text"  class="form-control" id="fieldProvinceName" required maxlength="60" minlength="3"/>
+				</div>
+				<div class="col-2"></div>
+			</div>
+			<div class="row my-2">
+				<div class="col-2"></div>
+				<label class="col-form-label col-2">Mã tỉnh:</label>
+				<div class="col-md-6">
+					<input type="text"  class="form-control" id="fieldProvinceCode" required maxlength="2" minlength="2"/>
+				</div>
+				<div class="col-2"></div>
+			</div>
+			<div class="text-center">
+				<input type="button" id="btnAddProvince" value="Thêm"   class="btn btn-primary my-2 mx-1 px-3"  />
+				<input type="button" id="btnDeleteProvince" value="Xóa" disabled class="btn btn-primary my-2 mx-1 px-4"  />
+				<input type="button" id="btnUpdateProvince" value="Sửa" disabled class="btn btn-primary my-2 mx-1 px-4"  />
+			</div>
+		</div>
+		</form>
+	</div>
+</body>	
+</html>

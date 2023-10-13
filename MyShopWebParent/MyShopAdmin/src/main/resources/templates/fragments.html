@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="page_head(title,remove)" th:remove="${remove}">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0">
+	<title>[[${title}]]</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/style.css}"/>
+	<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/common.js}"></script>
+	 <style type="text/css">
+    
+    
+    a:hover {color: #FFCC00}
+    a:active {color: #FF00CC}
+     </style>
+</head>
+
+<body>
+	<div th:fragment="enabled_status(enabled,entityName,mName,entityURL)" class="text-center">
+		<a th:if="${enabled==true}" class="fa-solid fa-circle-check fa-2xl link-updateEnabled "style="color: #12d312;"
+		th:href="@{${entityURL}+'/enabled/false'}" th:title="'Ngừng kích hoạt '+ ${entityName} +'này'"
+		 th:mName="${mName}"></a>
+		
+		<a th:if="${enabled!=true}" class="fa-solid fa-circle fa-2xl link-updateEnabled" style="color: #a5a7a5;"
+		th:href="@{${entityURL}+'/enabled/true'}" th:title=" 'Kích hoạt '+ ${entityName} +'này'"
+		 th:mName="${mName}"></a>
+	</div>
+	
+	<div th:fragment="product_actions" >
+		<a class="fas fa-file-alt fa-2xl icon-green link-detail"
+		th:href="@{'/products/detail/'+${product.id}}"
+		title="Xem chi tiết sản phẩm này" ></a>
+		&nbsp; &nbsp;
+		<a class="fa-solid fa-pen-to-square fa-2xl icon-bluedark  " th:href="@{'/products/edit/'+${product.id}}"
+		title="Chỉnh sửa sản phẩm này"  ></a>
+		 &nbsp; &nbsp;
+		<a  class="fa-solid fa-trash fa-2xl link-delete" style="color: #db2d1a;" th:href="@{'/products/delete/'+${product.id}}"
+		title="Xóa sản phẩm này" th:productName="${product.name}" ></a>
+	</div>
+	
+	<div th:fragment="category_actions" >
+		<a class="fa-solid fa-pen-to-square fa-2xl icon-bluedark  " th:href="@{'/categories/edit/'+${category.id}}"
+		title="Chỉnh sửa danh mục này"  ></a>
+		 &nbsp; &nbsp;
+		<a th:if="${category.hasChildren==false}" class="fa-solid fa-trash fa-2xl link-delete" style="color: #db2d1a;" th:href="@{'/categories/delete/'+${category.id}}"
+		title="Xóa danh mục này" th:categoryName="${category.name}" ></a>
+	</div>
+	
+	
+	<div th:fragment="brand_actions" >
+		<a class="fa-solid fa-pen-to-square fa-2xl icon-bluedark  " th:href="@{'/brands/edit/'+${brand.id}}"
+		title="Chỉnh sửa thương hiệu này"  ></a>
+		 &nbsp; &nbsp;
+		<a  class="fa-solid fa-trash fa-2xl link-delete" style="color: #db2d1a;" th:href="@{'/brands/delete/'+${brand.id}}"
+		title="Xóa thương hiệu này" th:brandName="${brand.name}" ></a>
+	</div>
+		
+		
+<div th:fragment="form_search(entityURL)">
+			<form th:action="@{${entityURL}}" class="form-inline m-3">
+				<input type="hidden"  name="sortField" th:value="${sortField}"/>
+				<input type="hidden"  name="sortDir" th:value="${sortDir}"/>
+				
+				Tìm kiếm:&nbsp;
+				<input type="search" name="keyword" class="form-control" required th:value="${keyword}" />
+				&nbsp;&nbsp;
+				<input type="submit" value="Tìm kiếm" class="btn btn-primary" />
+				&nbsp;&nbsp;
+				<a  class="btn btn-secondary" 
+				th:href="@{${entityURL}+'?sortField='+${sortField}+'&sortDir='+${sortDir}+'&keyword='}" >
+				 Hủy</a>
+			</form>
+		</div>
+	
+						<th th:fragment="column_link(table,fieldName,cLabel)" class="text-center">
+							<a class="text-white" 
+							th:href="@{'/'+${table}+'/page/1?sortField='+${fieldName}+'&sortDir='+${sortField!=fieldName?sortDir:reverseSortDir }+'&keyword='+${keyword}+${categoryId!=null? '&categoryId='+categoryId : ''}}">
+							[[${cLabel}]]
+							</a>
+							
+							<span th:if="${sortField==fieldName}"
+							th:class="${sortDir=='asc'? 'fas fa-sort-down' : 'fas fa-sort-up'}"></span>
+						</th>
+
+					<a th:fragment="page_link(table,pageNum,Label)" class="page-link" 
+					th:href="@{'/'+${table}+'/page/'+${pageNum}+'?sortField='+${sortField}+'&sortDir='+${sortDir}+'&keyword='+${keyword}+${categoryId!=null? '&categoryId='+categoryId : ''}}" aria-label="Previous">
+			        <span aria-hidden="true">[[${Label}]]</span>
+			       
+			      	</a>	
+		<div th:fragment="footer" class="text-center m-3">
+			<p> MyShop Control Panel</p>
+		</div>
+		
+	<div th:fragment="currency_fragment(price)" th:remove="tag">
+		<span th:if="${CURRENCY_SYMBOL_POSITION =='before'}" th:remove="tag">[[${CURRENCY_SYMBOL}]]&nbsp;[[${#numbers.formatDecimal(price,1,THOUSANDS_POINT_TYPE,DECIMAL_DIGITS,DECIMAL_POINT_TYPE)}]]</span>
+		<span th:if="${CURRENCY_SYMBOL_POSITION =='after'}" th:remove="tag">[[${#numbers.formatDecimal(price,1,THOUSANDS_POINT_TYPE,DECIMAL_DIGITS,DECIMAL_POINT_TYPE)}]]&nbsp;[[${CURRENCY_SYMBOL}]]</span>
+		
+	</div>	
+	
+	<div th:fragment="format_time(time)" th:remove="tag">
+		<span th:text="${#dates.format(time,'yyyy-MM-dd HH:mm:ss')}"></span>
+	</div>						
+</body>
+</html>

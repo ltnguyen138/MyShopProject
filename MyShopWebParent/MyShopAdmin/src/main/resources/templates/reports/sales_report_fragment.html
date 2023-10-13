@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head >
+	<meta charset="UTF-8">
+</head>
+<body>
+	<div th:fragment="content(reportType)" th:remove="tag" class="mt-4">
+		<div class="mt-3" th:with="buttonClass = 'button-sales-by' + ${reportType}">
+			<button period="last_7_days" class="btn btn-primary" th:classappend="${buttonClass}">Trong 7 ngày</button>
+			<button period="last_28_days" class="btn btn-secondary" th:classappend="${buttonClass}">Trong 28 ngày</button>
+			<button period="last_6_months" class="btn btn-secondary" th:classappend="${buttonClass}">Trong 6 tháng</button>
+			<button period="last_years" class="btn btn-secondary" th:classappend="${buttonClass}">Trong 1 năm</button>
+			<button  class="btn btn-secondary" th:classappend="${buttonClass}">Chọn ngày</button>
+		</div>
+		
+		<form>
+			<div th:id="'divCustomDateRange' + ${reportType}" class="mt-3 d-none">
+				Từ ngày: <input type="date" th:id="'startDate' + ${reportType}">
+				&nbsp; Đến trước ngày: <input type="date" th:id="'endDate' + ${reportType}">
+				&nbsp;
+				<button type="button" class="btn btn-secondary"
+					th:id="'buttonViewReportByDateRange' + ${reportType}">Xem</button>
+			</div>
+		</form>
+		
+		<div th:id="'chart_sales_by' +${reportType}"
+			class="justify-content-center mt-3"></div>
+			
+		<div class="row mt-3 justify-content-center">
+			<div class="col-2-sm">
+				<div class="card">
+					<div class="card-header"><b>Tổng doanh thu</b></div>
+					<div class="card-body">
+						<span class="h3" th:id="'textTotalGrossSales' + ${reportType}"></span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-2-sm">
+				<div class="card">
+					<div class="card-header"><b>Tổng lợi nhuận</b></div>
+					<div class="card-body">
+						<span class="h3" th:id="'textTotalNetSales' + ${reportType}"></span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-2-sm">
+				<div class="card">
+					<div class="card-header"><b>Trung bình doanh thu</b></div>
+					<div class="card-body">
+						<span class="h3" th:id="'textAvgGrossSales' + ${reportType}"></span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-2-sm">
+				<div class="card">
+					<div class="card-header"><b>Trung bình lợi nhuận</b></div>
+					<div class="card-body">
+						<span class="h3" th:id="'textAvgNetSales' + ${reportType}"></span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-2-sm">
+				<div class="card">
+					<div class="card-header"><b><span th:id="'labelTotalItems' + ${reportType}"></span></b></div>
+					<div class="card-body">
+						<span class="h3" th:id="'textTotalOders' + ${reportType}"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="page_head(title)">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0">
+	<title>[[${title}]]</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/style.css}"/>
+	<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/common.js}"></script>
+	 <style type="text/css">
+    
+    
+    a:hover {color: #FFCC00}
+    a:active {color: #FF00CC}
+     </style>
+</head>
+
+<body>
+	<div th:fragment="content" class="mt-4">
+		
+		<th:block th:unless="${isReadOnlyForSales}">
+		
+		<div id="divProductImages">
+			<div class="border m-3 p-2 text-center" >
+				<div><label >Hình ảnh chính: [[${product.mainImage}]]</label></div>
+				<div>							
+					
+					<img alt="anh chinh san pham"  class="img-fluid" id="thumbnail" th:src="@{${product.mainImagePath}}" 
+					style="width: 250px; height: 170px"/>																
+				</div>
+				<div>
+					<input type="file" name="fileImage" id="fileImage" class="m-2  " accept="image/png, image/jpeg"
+					th:required="${product.mainImage==null}"/>
+				</div>
+				<input type="hidden" th:field="*{mainImage}" />
+			</div>
+			
+			<th:block th:each="productExtrasImage, status : ${product.images}">
+				<div class=" border m-3 p-2 text-center" th:id="${'divExtraImage'+status.index}">
+					<div th:id="${'extraImageHeader'}">
+						<label >Hình ảnh phụ [[${status.index +1}]]: [[${productExtrasImage.name}]]</label>
+						<a class="btn fas fa-times-circle fa-2x icon-dark float-right"
+							name="linkRemoveExtraImage" 
+							title="Remove this image">
+						</a>
+					</div>
+					<div >							
+						
+						<img th:alt="'Hình ảnh phụ '+${status.index +1}"  class="img-fluid" th:id="${'extraThumbnail'+status.index}" th:src="@{${productExtrasImage.getImagePath}}" 
+						style="width: 250px; height: 170px"/>																
+					</div>	
+					<div>
+						<input type="file" name="extraFileImage" id="extraFileImage" class="m-2  " accept="image/png, image/jpeg"/>
+					</div>
+					<input type="hidden" name="extraImagesId" th:id="'extraImagesId'+${status.index}" 
+					th:value="${productExtrasImage.id}"/>
+					<input type="hidden" name="extraImagesName" th:id="'extraImagesName'+${status.index}" 
+					th:value="${productExtrasImage.name}"/>
+				</div>
+			</th:block >
+			
+			
+			<div class=" border m-3 p-2 text-center" th:id="'divExtraImage'+${numberExitsExtraImages}">
+				<div id="extraImageHeader0"><label >Hình ảnh phụ [[${numberExitsExtraImages+1}]]:</label></div>
+				<div>							
+					
+					<img alt="Hình ảnh phụ [[${numberExitsExtraImages}]]"  class="img-fluid" th:id="'extraThumbnail'+${numberExitsExtraImages}" th:src="@{${product.mainImagePath}}" 
+					style="width: 250px; height: 170px"/>																
+				</div>
+				<div>
+					<input type="file" name="extraFileImage" id="extraFileImage" class="m-2  " accept="image/png, image/jpeg"/>
+				</div>
+				
+			</div>
+		</div>
+		
+		</th:block>
+		
+		<th:block th:if="${isReadOnlyForSales}"  >
+			<div class="">
+				<div class="  border m-3 p-2 " >
+					<div><label >Hình ảnh chính: [[${product.mainImage}]]</label></div>
+					<div>							
+						
+						<img alt="anh chinh san pham"  class="img-fluid" th:src="@{${product.mainImagePath}}" 
+						style="width: 250px; height: 170px"/>																
+					</div>	
+				</div>			
+				<th:block th:each="productExtrasImage, status : ${product.images}">
+					<div class=" border m-3 p-2 " >
+						<div >
+							<label >Hình ảnh phụ [[${status.index +1}]]: [[${productExtrasImage.name}]]</label>
+						</div>
+						<div >							
+							<img th:alt="'Hình ảnh phụ '+${status.index +1}"  class="img-fluid"  th:src="@{${productExtrasImage.getImagePath}}" 
+							style="width: 250px; height: 170px"/>																
+						</div>	
+					</div>
+				</th:block >
+	
+			</div>
+		</th:block>
+		
+	</div>	
+		
+				
+</body>
+</html>

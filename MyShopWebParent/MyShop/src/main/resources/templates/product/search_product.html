@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="fragments::page_head(${pageTitle},'none')">
+<body>
+	<div class="container-fluid ">
+		<div th:replace="navigation::header_menu"></div>
+		<div th:replace="fragments::form_search_nav"></div>
+		<div th:if="${totalItems>0}" class="mx-3">
+			<h4> Kết quả tìm kiếm từ khóa: [[${keyword}]]</h4>
+		</div>
+		
+		<div th:unless="${totalItems>0}" class="mx-3">
+			<h4> Rất tiết, chúng tôi không tìm thấy kết quả nào với từ khóa: [[${keyword}]]</h4>
+		</div>
+		
+		<div>
+			<div th:if="${totalItems>0}" class="m-2"> <span><b>Danh sách sản phẩm</b></span></div>
+			<div class="row">
+				<th:block th:each="product : ${listProducts}">
+					<div class="col m-2">
+						<div class="text-center">
+							<a th:href="@{'/p/'+${product.alias}}">	
+								<img  th:src="@{${product.mainImagePath}}" width="250px" height="180px">
+								<br/>
+								<b>[[${product.getShortName}]]</b>
+							</a>
+							<div th:if="${product.discountPercent<=0}">
+								<span>[[${product.getDefaultPrice}]]</span>
+							</div>
+							
+							<div th:if="${product.discountPercent>0}">
+								<span style="font-size: larger;color:darkred;">[[${product.getDiscountPrice}]]</span>
+								<del>[[${product.getDefaultPrice}]]</del>
+							</div>
+						</div>
+					</div>
+				</th:block.>
+			</div>
+		
+		</div>
+		
+		<div class="text-center m-1" th:if="${totalItems>0}">
+			<span>Từ sản phẩm thứ [[${startCount}]] đến thứ [[${endCount}]] trong số [[${totalItems}]] sản phẩm</span>
+		</div>
+		<div class="text-center m-1" th:unless="${totalItems>0}">
+			<span>Không tìm thấy sản phẩm</span>
+		</div>
+		<div th:if="${totalPages>0}">
+			<nav >
+			  <ul class="pagination justify-content-center">
+			  
+			    <li class="page-item">
+			      <a th:replace="fragments::page_link('search','1','&laquo;')"></a>
+			    </li>
+			    
+			    <li class="page-item" th:unless="${pageNum==1}">
+			      <a th:replace="fragments::page_link('search',${pageNum-1},'&lt;')"></a>
+			    </li>
+			    
+			    <li th:class="${pageNum!=i? 'page-item' : 'page-item active' }" th:each="i:${#numbers.sequence(1,totalPages)}">
+			    <a th:replace="fragments::page_link('search',${i},${i})"></a>
+			    </li>
+			   
+			    <li class="page-item" th:unless="${pageNum==totalPages}">
+			      <a th:replace="fragments::page_link('search',${pageNum+1},'&gt;')"></a>
+			    </li>
+			    <li class="page-item" >
+			      <a th:replace="fragments::page_link('search',${totalPages},'&raquo')"></a>
+			    </li>
+			  </ul>
+			</nav>
+		</div>
+		
+		<div th:replace="navigation::footer_menu"></div>
+		<div th:replace="fragments::footer"></div>
+	</div>
+</body>
+</html>

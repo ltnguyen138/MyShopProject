@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments::page_head('Giỏ hàng','none')">
+</head>
+
+<body>
+	<div class="container-fluid ">
+		
+		<div th:replace="navigation::header_menu"></div>
+		<div th:replace="fragments::form_search_nav"></div>		
+		
+		<div class="text-center my-3"><h2>Giỏ hàng</h3></div>
+		
+		<div id="divEmptyCart"th:if="${#lists.isEmpty(listCartItems)}" class="h4 text-center">Giỏ hàng trống, bạn chưa thêm sản phẩm nào vào giỏ hàng!!!</div>
+		<div id="divEmptyCart2" class="h4 text-center"> </div>
+		
+		<div class="row m-2" id="divCart" th:unless="${#lists.isEmpty(listCartItems)}">
+			<div class="col-8">	
+				<th:block th:each="item, status : ${listCartItems}">
+					<div class="row border rounded my-2" th:with="product=${item.product}" th:id="'row'+${status.count}">
+						<div class="col-1 ">
+							<div class="divStatusCount" >[[${status.count}]]</div>
+							<div>
+								<a th:href="@{'cart/remove/'+${product.id}}" title="Xóa sản phẩm này khỏi giỏ hàng" class="linkRemove" th:rowNumber="${status.count}">
+									<i class="fa-solid fa-trash fa-lg " style="color: #cd210e;"></i>
+								</a>
+							</div>
+						</div>
+						<div class="col-3">
+							<img th:src="@{${product.mainImagePath}}" class="img-fluid" style="max-width: 300px ;height:180px " />
+						</div>
+						<div class="col-1"></div>
+						<div class="col-4">
+							<div>
+								<a th:href="@{'/p/'+${product.alias}}" target="_blank"><b>[[${product.getShortName}]]</b></a>
+							</div>
+							
+						</div>
+						<div class="col-3">
+							<div class="">
+								<span>Số lượng:</span>
+							</div>
+							<div>							
+								<input type="hidden" th:value="${product.quantity}" id="quantityOfProduct"/>
+								<div th:replace="cart/quantity_control :: quantity_control(${item.quantiny},${product.id})"></div>								
+							</div>
+							<div>
+								<span>Đơn giá:</span>
+							</div>
+							<div>
+								<div th:if="${product.discountPercent<=0}">
+									<span style="font-size: larger;color:crimson;">
+										<div th:replace="product/product_fragment::price_fragment(${product.price})"></div>
+									</span>
+								</div>
+								
+								<div th:if="${product.discountPercent>0}">
+									<span style="font-size: larger;color:crimson;">
+										<div th:replace="product/product_fragment::price_fragment(${product.getDiscountPrice})"></div>&ensp;
+									</span>
+									<del><div th:replace="product/product_fragment::price_fragment(${product.price})"></div></del>
+									
+								</div>
+							</div>
+							<div><b>Thành tiền:</b></div>
+							<div style="font-size: larger;color:crimson;">
+								<b>
+									<input type="hidden" th:value="${product.getDiscountPrice * item.quantiny}" class="subTotalPriceN" th:id="'subTotalPriceN'+${product.id}"/>
+								
+									<input type="hidden" th:value="${product.getDiscountValue * item.quantiny}" class="subTotalDiscountN"th:id="'subTotalDiscountN'+${product.id}" />
+									<span  th:id="'subTotalPrice'+${product.id}" class="subTotalPrice">
+									[[${#numbers.formatDecimal(product.getDiscountPrice*item.quantiny,1,THOUSANDS_POINT_TYPE,DECIMAL_DIGITS,DECIMAL_POINT_TYPE)}]]
+									</span>
+									&nbsp;
+									<span >[[${CURRENCY_SYMBOL}]]</span>
+								</b>
+							</div>
+						</div>
+						
+					</div>
+				</th:block>
+			</div>
+			
+			<div class="col-4" >
+				<div>
+					<span class="h3 mx-3 text-center">Tổng số tiền:</span>
+				</div>
+				<div class="mx-3 my-2" style="font-size: larger;color:crimson;">
+					<b>
+						<span id="totalPrice">
+							[[${#numbers.formatDecimal(totalPrice,1,THOUSANDS_POINT_TYPE,DECIMAL_DIGITS,DECIMAL_POINT_TYPE)}]]	
+						</span>	
+						&nbsp;
+						<span >[[${CURRENCY_SYMBOL}]]</span>
+					</b>	
+				</div>
+				<div class="mx-3 " th:if="${totalDiscount>0}" id="divTotalDiscount">
+					<span>Bạn đã tiết kiệm:&ensp;</span>
+					<span id="totalDiscount" >[[${#numbers.formatDecimal(totalDiscount,1,THOUSANDS_POINT_TYPE,DECIMAL_DIGITS,DECIMAL_POINT_TYPE)}]]</span>
+					&nbsp;
+					<span >[[${CURRENCY_SYMBOL}]]</span>
+				</div>
+				
+				<div class="mx-3 my-4 ">
+					<div th:unless="${customer.isEmptyAddress}">
+						<form th:action="@{/checkout}">
+							<button type="submit" class="btn btn-success py-2 px-4">Đặt hàng</button>
+						</form>
+					</div>
+					
+					<div th:if="${customer.isEmptyAddress}">
+						<div><span style="color: rgb(238,201,0);font-size: larger">Bạn chưa chọn địa chỉ giao hàng!<br> Vui lòng cập nhật địa chỉ để đặt hàng.</span></div>
+						<div><a th:href="@{/account_details(redirect=cart)}">Cập nhật địa chỉ giao hàng</a></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		<div th:replace="navigation::footer_menu"></div>
+		<div th:replace="fragments::footer"></div>
+		<div th:replace="modal_fragments::modal_dialog"></div>		
+		
+		<script type="text/javascript">
+			moduleURL="[[@{/products}]]";
+			contextPath = "[[@{/}]]";
+			var csrfHeaderName = "[[${_csrf.headerName}]]";
+			var csrfValue = "[[${_csrf.token}]]";
+			
+			decimalDigits="[[${DECIMAL_DIGITS}]]";
+			decimalPointType="[[${DECIMAL_POINT_TYPE}]]";
+			thousandsPointType="[[${THOUSANDS_POINT_TYPE}]]";
+		</script>
+		<script th:src="@{/js/showModal.js}"></script>
+		<script th:src="@{/js/shopping_cart.js}"></script>
+		<script th:src="@{/js/jquery.number.min.js}"></script>
+	</div>
+</body>
+
+</html>

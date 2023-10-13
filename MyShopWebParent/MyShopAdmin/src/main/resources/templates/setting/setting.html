@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<head th:replace="fragments::page_head(${pageTitle},'tag')"/>
+	<link rel="stylesheet" th:href="@{/richtext/richtext.min.css}"/>
+	<script th:src="@{/richtext/jquery.richtext.min.js}"></script>
+</head>
+
+
+
+<body>
+	<div class="container-fluid ">
+		<div th:replace="navigation::menu"></div>
+				
+		<div class="my-3 text-center">
+			<h2>[[${pageTitle}]]</h2>
+		</div >
+		<div th:if="${message !=null}" class="alert alert-success text-center">
+			[[${message}]]
+		</div>
+		<div class="mt-4" style="max-width: 1000px; margin: 0 auto">
+			
+				
+				<ul class="nav nav-tabs" id="myTab" role="tablist">
+				  <li class="nav-item">
+				    <a class="nav-link active"  data-toggle="tab" href="#general" role="tab" >Cài đặt chung</a>
+				  </li>
+				  <li class="nav-item">
+				    <a class="nav-link"  data-toggle="tab" href="#province" role="tab" >Tỉnh/Thành phố</a>
+				  </li>
+				  <li class="nav-item">
+				    <a class="nav-link"  data-toggle="tab" href="#district" role="tab" >Quận/Huyện</a>
+				  </li>
+				  <li class="nav-item">
+				    <a class="nav-link"  data-toggle="tab" href="#mailServer" role="tab" >Mail Server</a>
+				  </li>
+				  <li class="nav-item">
+				    <a class="nav-link"  data-toggle="tab" href="#mailTemple" role="tab" >Mẫu email</a>
+				  </li>
+				  <li class="nav-item">
+				    <a class="nav-link"  data-toggle="tab" href="#payment" role="tab" >Thanh toán</a>
+				  </li>
+				  
+				</ul>
+				
+				
+				<div class="tab-content">
+				  <div class="tab-pane active" id="general" role="tabpanel" >
+				  	<div th:replace="setting/general :: content"></div>
+				  </div>
+				  <div class="tab-pane" id="province" role="tabpanel" >
+				  	<div th:replace="setting/province :: content"></div>
+				  </div>	
+				  <div class="tab-pane" id="district" role="tabpanel" >
+				  	<div th:replace="setting/district :: content"></div>
+				  </div>
+				  <div class="tab-pane" id="mailServer" role="tabpanel" >
+				  	<div th:replace="setting/mailServer :: content"></div>
+				  </div>
+				  <div class="tab-pane" id="mailTemple" role="tabpanel" >
+				  	<div th:replace="setting/mail_templates/mail_templates :: content"></div>
+				  </div>
+				 <div class="tab-pane" id="payment" role="tabpanel" >
+				  	y
+				  </div>
+				</div>				
+				
+			
+		</div>
+		<div class="toast justify-content-center d-flex " role="alert"
+			aria-live="polite" aria-atomic="true" data-delay="3000">
+			<div role="alert" aria-live="assertive" aria-atomic="true">
+				<div class="toast-body " >
+					<span id="toastMessage"  style="color: darkgreen; font-size: 16px"></span>
+				</div>
+			</div>
+		</div>
+		
+		<div th:replace="modal_fragments::modal_dialog"></div>
+		<div th:replace="fragments::footer"></div>
+		
+	</div>
+	<script type="text/javascript">
+	moduleURL="[[@{/settings}]]";
+	contextPath="[[@{/}]]"
+	var csrfHeaderName = "[[${_csrf.headerName}]]";
+	var csrfValue = "[[${_csrf.token}]]";
+	$(document).ready(function(){
+			
+		$("#fileImage").change(function(){
+			fileSize=this.files[0].size;
+			if(fileSize>1048576){
+				this.setCustomValidity("Kích thước file phải nhỏ hơn 1MB");
+				this.reportValidity();
+			}else{
+				this.setCustomValidity("");
+				showImageThumbnail(this)
+			}
+				
+			
+		});
+			
+		$("#customerVerificationContent").richText();
+		$("#oderConfirmationContent").richText();
+	})	;
+		
+	function showImageThumbnail(fileI){
+		var file=fileI.files[0];
+		var reader= new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload=function(e){
+			$("#thumbnail").attr("src",e.target.result);
+		};
+		
+	}
+	
+	
+	
+	</script>
+	<script th:src="@{/js/province_setting.js}"></script>
+	<script th:src="@{/js/district_setting.js}"></script>
+</body>	
+</html>

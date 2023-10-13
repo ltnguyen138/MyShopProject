@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments::page_head('Quản lý tuyến đường vận chuyển - MyShop Admin','none')">
+
+</head>
+<body>
+	<div class="container-fluid ">
+		<div th:replace="navigation::menu"></div>
+				
+		<div>
+			<h2>Quản lý tuyến đường vận chuyển</h2>
+		</div >
+		<div class="mt-3">
+			
+			<a th:href="@{/users/export/csv}">Xuất file CSV</a>
+			&nbsp;|&nbsp;
+			<a th:href="@{/shipping_rates/new}">Thêm mới</a>
+		</div>
+		<div th:if="${message !=null}" class="alert alert-success text-center">
+			[[${message}]]
+		</div>
+		<div th:if="${errorMessage !=null}" class="alert alert-danger text-center">
+			[[${errorMessage}]]
+		</div>
+		<div>
+			<form th:action="@{/shipping_rates/page/1}" class="form-inline m-3">
+				<input type="hidden"  name="sortField" th:value="${sortField}"/>
+				<input type="hidden"  name="sortDir" th:value="${sortDir}"/>
+				Tìm kiếm:&nbsp;
+				<input type="search" name="keyword" class="form-control" required th:value="${keyword}" />
+				&nbsp;&nbsp;
+				<input type="submit" value="Tìm kiếm" class="btn btn-primary" />
+				&nbsp;&nbsp;
+				<a  class="btn btn-secondary" 
+				th:href="@{'/shipping_rates/page/'+${pageNum}+'?sortField='+${sortField}+'&sortDir='+${sortDir}+'&keyword='}" >
+				 Hủy</a>
+			</form>
+		</div>
+		
+		<div class="mt-2">
+			<table class="table table-bordered table-striped table-hover  table-responsive-xL">
+				<thead class="thead-dark" >
+				
+					<tr >
+					
+						<th th:replace="fragments::column_link('shipping_rates','id','Mã tuyến đường')" ></th>
+						
+					
+						<th th:replace="fragments::column_link('shipping_rates','province','Tỉnh/thành phố')" ></th>
+						
+						<th th:replace="fragments::column_link('shipping_rates','district','Quận/huyện')" ></th>
+						
+						<th th:replace="fragments::column_link('shipping_rates','cost','Giá cước / kg')" ></th>
+						
+						<th th:replace="fragments::column_link('shipping_rates','days','Số ngày dự kiến')" ></th>
+				
+						<th></th>
+						
+					</tr>
+										
+				</thead>	
+				<tbody>
+					<tr th:each="rate : ${listAllShippingRates}" >
+						<td th:text="${rate.id}"></td>
+												
+						
+						<td>[[${rate.province.name}]]</td>
+						
+						<td>[[${rate.district}]]</td>
+						<td th:text="${rate.cost}"></td>
+						<td th:text="${rate.days}"></td>
+						
+						
+						<td class="text-center">
+						
+						<a class="fa-solid fa-pen-to-square fa-2xl icon-bluedark " th:href="@{'/shipping_rates/edit/'+${rate.id}}"
+						title="Chỉnh sửa thông tin tuyến đường này"></a>
+						 &nbsp; &nbsp;
+						<a  class="fa-solid fa-trash fa-2xl link-delete" style="color: #db2d1a;" th:href="@{'/shipping_rates/delete/'+${rate.id}}"
+						title="Xoa thông tin tuyến đường  này" th:ratePD ="${rate.district}+ ', ' +${rate.province.name} " ></a></td>
+						
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="modal fade text-center" id="confirmModal">
+			<div class="modal-dialog">
+				<div class=modal-content>
+					<div class="modal-header">
+						<h4 class="modal-title" id="confirmTitle">Xác nhận xóa</h4>
+						<button type="button" class="close" data-dismiss="modal">&times; </button>
+					</div>
+					<div class="modal-body">
+						<span id="confirmBody"></span>
+					</div>
+					<div class="modal-footer">
+						<a class="btn btn-success mx-3  " href="" id="yesButton">Xác nhận</a>
+						<button type="button" class="btn px-4 btn-danger " data-dismiss="modal">Không </button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="text-center m-1" th:if="${totalItems>0}">
+			<span>Từ tuyến vận chuyển thứ [[${startCount}]] đến thứ [[${endCount}]] trong số [[${totalItems}]] tuyến vận chuyển</span>
+		</div>
+		<div class="text-center m-1" th:unless="${totalItems>0}">
+			<span>Không tìm thấy tuyến vận chuyển</span>
+		</div>
+		<div th:if="${totalPages>0}">
+			<nav >
+			  <ul class="pagination justify-content-center">
+			  
+			    <li class="page-item">
+			      <a th:replace="fragments::page_link('shipping_rates','1','&laquo;')"></a>
+			    </li>
+			    
+			    <li class="page-item" th:unless="${pageNum==1}">
+			      <a th:replace="fragments::page_link('shipping_rates',${pageNum-1},'&lt;')"></a>
+			    </li>
+			    
+			    <li th:class="${pageNum!=i? 'page-item' : 'page-item active' }" th:each="i:${#numbers.sequence(1,totalPages)}">
+			    <a th:replace="fragments::page_link('shipping_rates',${i},${i})"></a>
+			    </li>
+			   
+			    <li class="page-item" th:unless="${pageNum==totalPages}">
+			      <a th:replace="fragments::page_link('shipping_rates',${pageNum+1},'&gt;')"></a>
+			    </li>
+			    <li class="page-item" >
+			      <a th:replace="fragments::page_link('shipping_rates',${totalPages},'&raquo')"></a>
+			    </li>
+			  </ul>
+			</nav>
+		</div>
+		
+		<div th:replace="fragments::footer"></div>
+		
+		<script type="text/javascript">
+	moudleUrl="[[@{/shipping_rates}]]"
+	
+	$(document).ready(function(){
+		$(".link-delete").on("click",function(e){
+			e.preventDefault();
+			link=$(this);
+			ratePD=link.attr("ratePD");
+			$("#confirmBody").text("Xác nhận xóa tuyến vận chuyển "+ratePD);
+			$("#confirmModal").modal();
+			$("#yesButton").attr("href",link.attr("href"));
+		});
+	
+		
+	});
+	
+	
+	
+	</script>
+	</div>
+	
+</body>
+</html>

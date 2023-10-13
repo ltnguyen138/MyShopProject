@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+
+</head>
+<body>
+	<div th:fragment="price_fragment(productPrice)" th:remove="tag">
+		<span th:if="${CURRENCY_SYMBOL_POSITION =='before'}" th:remove="tag">[[${CURRENCY_SYMBOL}]]&nbsp;[[${#numbers.formatDecimal(productPrice,1,THOUSANDS_POINT_TYPE,DECIMAL_DIGITS,DECIMAL_POINT_TYPE)}]]</span>
+		<span th:if="${CURRENCY_SYMBOL_POSITION =='after'}" th:remove="tag">[[${#numbers.formatDecimal(productPrice,1,THOUSANDS_POINT_TYPE,DECIMAL_DIGITS,DECIMAL_POINT_TYPE)}]]&nbsp;[[${CURRENCY_SYMBOL}]]</span>
+		
+	</div>
+</body>
+</html>

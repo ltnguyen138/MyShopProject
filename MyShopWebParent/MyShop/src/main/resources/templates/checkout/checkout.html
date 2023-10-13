@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="fragments::page_head('Đặt hàng - MyShop ','none')">
+<body>
+	<div class="container-fluid ">
+		<div th:replace="navigation::header_menu"></div>
+		<div th:replace="fragments::form_search_nav"></div>
+		<div class="text-center mt-3">
+			<h3> Thông tin đơn hàng</h1>
+		</div>
+	
+		
+		
+		<div class="row m-5">
+			<div class="col-sm-7">
+				<div class="card">
+					<div class="card-header text-center"><h5>Thông tin đơn hàng</h5></div>
+					<div class="card-body">
+						<div>
+							<table>
+								<th:block th:each="item : ${cartItems}">
+									<tr  th:with="product=${item.product}" >
+										<td width="10%"> [[${item.quantiny}]]&nbsp;X</td>
+										<td width="60%"> 
+											<a th:href="@{'/p/'+${product.alias}}" target="_blank"><b>[[${product.getShortName}]]</b></a>	
+											<br/>
+											<small>Ship:&nbsp;<div th:replace="fragments::currency_fragment(${item.shippingCost})"></div></small>						
+										</td>
+										<td>
+											Tiền hàng:&nbsp; <div th:replace="fragments::currency_fragment(${item.getSubtotal})"></div>
+										</td>
+									</tr>
+								</th:block>								
+							</table>							
+						</div>
+						<hr>
+						<div class="row ml-5">
+							<div class="col-2">Tổng tiền hàng:</div>
+							<div class="col-5"><div th:replace="fragments::currency_fragment(${checkOutInfo.productPriceTotal})"></div></div>
+						</div>
+						<div class="row ml-5 mt-2">
+							<div class="col-2">Tổng tiền ship:</div>
+							<div class="col-5"><div th:replace="fragments::currency_fragment(${checkOutInfo.shippingCostTotal})"></div></div>
+						</div>
+						<div class="row ml-5 mt-2">
+							<div class="col-2"><b>Thành tiền:</b></div>
+							<div class="col-5"><b><div th:replace="fragments::currency_fragment(${checkOutInfo.paymentTotal})"></div></b></div>
+						</div>
+					</div>	
+						
+					
+				</div>
+				
+				<div class="card">
+					<div class="card-header text-center"><h5>Phương thức thanh toán</h5></div>
+					<div class="card-body">
+					<form th:action="@{/place_order}" method="post">
+						<p>
+							<input type="radio" value="COD" name="paymentMethod" id="radioCOD"/> Thanh toán tiền mặt&nbsp;&nbsp;&nbsp;
+							<button type="submit" class="btn btn-primary px-5 d-none" id="buttonSubmit">Đặt hàng</button>
+						</p>
+					</form>	
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-sm-5">
+				<div class="card">					
+					<div class="card-header text-center"><h5>Thông tin vận chuyển</h5></div>
+					<div class="card-body">
+						<p><b>Thông tin người nhận:</b>[[${shippingAddress}]] </p>
+						<p><b>Ngày nhận hàng dự kiện:&nbsp;</b><span th:text="${#dates.format(checkOutInfo.getDeliverDate,'yyyy-MM-dd')}"></span></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div th:replace="navigation::footer_menu"></div>
+		<div th:replace="fragments::footer"></div>
+		
+		
+		<script type="text/javascript">
+			moduleURL="[[@{/}]]";
+			contextPath = "[[@{/}]]";
+			var csrfHeaderName = "[[${_csrf.headerName}]]";
+			var csrfValue = "[[${_csrf.token}]]";
+			
+			$(document).ready(function(){
+				
+				$("#radioCOD").on("click",function(){
+					$("#buttonSubmit").removeClass("d-none");
+				});
+			});
+		</script>
+	</div>
+</body>
+</html>

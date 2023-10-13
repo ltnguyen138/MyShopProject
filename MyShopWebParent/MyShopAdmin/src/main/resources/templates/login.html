@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0">
+<title>Shopping controller</title>
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.css}"/>
+
+</head>
+<body>
+	<div class="container-fluid ">
+		
+		<div class="text-center mb-4" >
+			<img class="img-fluid"  width="200" height="200" alt="" th:src="@{/images/ShopmeAdminSmall.png}">
+		
+		<form th:action="@{/login}" method="post" style="max-width: 350px;margin: 0 auto;">
+				<div th:if="${param.error}">
+					<p class="text-danger">Email hoặc mật khấu không chính xác</p>
+				</div>
+				
+				<div th:if="${param.logout}">
+					<p class="text-warning">Đăng xuất thành công.</p>
+					<p class="text-warning"> Vui lòng đăng nhập để tiếp tục.</p>
+				</div>
+			<div class="border border-secondary rounded p-3 font-weight-bolder lead">
+				
+				<p align="center"> Đăng Nhập ShopMe Admin </p>
+				<p>
+					<input type="email" name="email" class="form-control" placeholder="Email" required />
+				</p>
+				<p>
+					<input type="password" name="password" class="form-control" placeholder="Mật khẩu" required/>
+				</p>	
+				
+				<p>
+					<input type="checkbox" name="remember-me" />&nbsp;Ghi nhớ đăng nhập
+				</p>
+				
+				<p align="center">
+					<input type="submit" class="btn btn-primary " value="Đăng nhập" />
+				</p>
+			</div>
+		
+		</form>
+		<div class="text-center mt-4">
+			<p> MyShop Control Panel</p>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="fragments::page_head('Đăng nhập My Shop','none')"></head>
+<body>
+	<div class="container-fluid ">
+		
+		<div class="text-center mb-4" >
+			<img class="img-fluid my-3"  width="200" height="200" alt="" th:src="@{${SITE_LOGO}}">
+		
+		<form th:action="@{/login}" method="post" style="max-width: 350px;margin: 0 auto;">
+				<div th:if="${param.error}">
+					<p class="text-danger">Email hoặc mật khấu không chính xác</p>
+				</div>
+				
+				<div th:if="${param.logout}">
+					<p class="text-warning">Đăng xuất thành công.</p>
+					<p class="text-warning"> Vui lòng đăng nhập để tiếp tục.</p>
+				</div>
+			<div class="border border-secondary rounded p-3 font-weight-bolder lead">
+				
+				<p align="center"> Đăng Nhập MyShop </p>
+				
+				<p>
+					<input type="email" name="email" class="form-control" placeholder="Email" required />
+				</p>
+				<p>
+					<input type="password" name="password" class="form-control" placeholder="Mật khẩu" required/>
+				</p>	
+				
+				<p>
+					<input type="checkbox" name="remember-me" />&nbsp;Ghi nhớ đăng nhập
+				</p>
+				
+				<p align="center">
+					<input type="submit" class="btn btn-primary  btn-block" value="Đăng nhập" />
+				</p>
+				<small><a th:href="@{/forgot_password}"> Bạn quên mật khẩu? </a></small>
+				<p> Hoặc </p>
+				<p> <a class="btn btn-danger  btn-block" th:href="@{/oauth2/authorization/google}"><i class="fa-brands fa-google-plus-g fa-lg" style="color: #fbfcfe;"></i>&nbsp;Đăng nhập với tài khoản Google</a> </p>
+				
+			</div>
+		
+		</form>
+		<div th:replace="fragments::footer"></div>
+	</div>
+	</div>
+</body>
+</html>

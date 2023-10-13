@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+	<div th:fragment="content" class="mt-4">
+		<p>Quản lý quận/ huyện trên web </p>
+		<div>
+			<input type="button" id="buttonLoadProvincesForDistrict" value="Tải danh sách tỉnh/thành phố" class="btn btn-primary my-2">
+		</div>
+		
+		<div class="row my-4 ">
+			<label class="form-label col-4">Chọn tỉnh/thành phố:</label>
+			<select class="form-control col-8" id="dropDownProvincesForDistrict"></select>
+		</div>
+		
+		<div class="row my-4 ">
+			<label class="form-label col-4">Chọn quận/ huyện:</label>
+			<select class="form-control col-8" size="9" id="dropDownDistrict"></select>
+		</div>
+		<form id="formDistrict">
+		<div class="form-group ">
+			<div class="row my-2">
+				
+				<label class="col-form-label col-2">Tên quận/ huyện:</label>
+				<div class="col-2"></div>
+				<div class="col-4">
+					<input type="text"  class="form-control" id="fieldDistrictName" required maxlength="60" minlength="3"/>
+				</div>
+				<div class="col-4">
+					<input type="button" id="btnAddDistrict" value="Thêm"   class="btn btn-primary  mx-1 px-3"  />
+					<input type="button" id="btnDeleteDistrict" value="Xóa" disabled class="btn btn-primary  mx-1 px-4"  />
+					<input type="button" id="btnUpdateDistrict" value="Sửa" disabled class="btn btn-primary  mx-1 px-4"  />
+				</div>
+				
+			</div>
+			
+			
+		</div>
+		</form>
+	</div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.myshop.admin.order.controller;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,9 +21,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.myshop.admin.customers.CustomerNotFoundException;
+import com.myshop.admin.order.OrderCsvExporter;
 import com.myshop.admin.order.OrderNotFoundException;
 import com.myshop.admin.order.OrderService;
+import com.myshop.admin.user.export.UserCsvExporter;
 import com.myshop.common.entity.Province;
+import com.myshop.common.entity.User;
 import com.myshop.common.entity.order.Order;
 import com.myshop.common.entity.order.OrderDetail;
 import com.myshop.common.entity.order.OrderStatus;
@@ -224,5 +229,11 @@ public class OrderController {
 			
 		}
 		
+	}
+	@GetMapping("/orders/export/csv")
+	public void  exportCSV(HttpServletResponse respone) throws IOException {
+		List<Order> listOrder=orderService.listAll();
+		OrderCsvExporter orderCsvExporter= new OrderCsvExporter();
+		orderCsvExporter.export(listOrder, respone);
 	}
 }

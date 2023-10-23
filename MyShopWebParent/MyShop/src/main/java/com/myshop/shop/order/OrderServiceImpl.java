@@ -21,13 +21,15 @@ import com.myshop.common.entity.order.OrderTrack;
 import com.myshop.common.entity.order.PaymentMethod;
 import com.myshop.common.entity.product.Product;
 import com.myshop.shop.checkout.CheckOutInfo;
+import com.myshop.shop.product.ProductRepository;
 
 @Component
 public class OrderServiceImpl implements OrderService{
 
 	@Autowired
 	OrderRepository orderRepository;
-	
+	@Autowired
+	ProductRepository	productRepository;
 	@Override
 	public Order createOrder(Customer customer, List<CartItem> cartItems, PaymentMethod paymentMethod,
 			CheckOutInfo checkOutInfo) {
@@ -53,7 +55,7 @@ public class OrderServiceImpl implements OrderService{
 			OrderDetail detail = new OrderDetail();
 			
 			Product product = item.getProduct();
-			
+			product.setQuantity(product.getQuantity()-item.getQuantiny());
 			detail.setOrder(order);
 			detail.setProduct(product);
 			detail.setProductCost(item.getQuantiny()*product.getCost());

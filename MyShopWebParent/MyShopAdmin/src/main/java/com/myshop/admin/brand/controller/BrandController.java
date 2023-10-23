@@ -1,6 +1,7 @@
 package com.myshop.admin.brand.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -56,6 +57,10 @@ public class BrandController {
 		}else if (sortDir.equals("desc")) {
 			reverseSortDir="asc";
 		}	
+		List<?> es= new ArrayList<>();
+		
+		Brand brand = new Brand();
+		es.add((Object)brand);
 		
 		long startCount=(pageNum-1)*brandService.BRAND_PER_PAGE+1;
 		long endCount=startCount+brandService.BRAND_PER_PAGE-1;

@@ -66,7 +66,7 @@ public class ReportRestController {
 		case "last_6_months":
 			return orderDetailReportService.getReportDataLast6Months(reportType);
 
-		case "last_year":
+		case "last_years":
 			return orderDetailReportService.getReportDataLast12Months(reportType);
 			
 		default:

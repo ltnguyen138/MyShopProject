@@ -23,6 +23,7 @@ function loadSalesReportByDate(period){
 	}
 	
 	$.get(requestURL,function(responseJSON){
+		
 		prepareChartDataForSalesReportByDate(responseJSON);
 		customizeChartForSalesReportByDate(period);
 		formatChartData(data, 1, 2);
@@ -32,6 +33,7 @@ function loadSalesReportByDate(period){
 }
 
 function prepareChartDataForSalesReportByDate(responseJSON){
+	console.log(responseJSON);
 	data = new google.visualization.DataTable();
 	data.addColumn('string', 'Ngày');
 	data.addColumn('number', 'Doanh thu');
